@@ -1,0 +1,27 @@
+{% extends "maat_app/base.html" %}
+
+{% block title %}Instructions{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h2>Experiment Instructions</h2>
+    <p>{{ instructions }}</p>
+    <form id="instruction-form" method="POST" action="{% url 'start_experiment' participant.id experiment.id %}">
+        {% csrf_token %}
+        <button type="button" onclick="startExperiment()">Start Experiment</button>
+    </form>
+</div>
+
+<script>
+function startExperiment() {
+    const form = document.getElementById('instruction-form');
+    const formAction = form.getAttribute('action');
+    const width = 800;
+    const height = 600;
+    const left = (screen.width - width) / 2;
+    const top = (screen.height - height) / 2;
+
+    window.open(formAction, 'ExperimentWindow', `width=${width},height=${height},top=${top},resizable,scrollbars`);
+}
+</script>
+{% endblock %}
