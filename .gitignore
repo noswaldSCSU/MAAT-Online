@@ -76,6 +76,9 @@ coverage.xml
 # Django development environment files
 .env
 
+# Settings File should be manually updated on server
+settings.py
+
 # SQL backup files
 *.sql
 

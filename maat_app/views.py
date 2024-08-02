@@ -292,7 +292,7 @@ def delete_experiment(request, experiment_id):
 def researcher_dashboard(request):
     experiments = Experiment.objects.all()
     participants = Participant.objects.all()
-    return render(request, 'maat_app/researcher_dashboard.html', {'experiments': experiments})
+    return render(request, 'maat_app/researcher_dashboard.html', {'experiments': experiments, 'participants': participants})
 
 # Manage Participants View
 @login_required
@@ -306,10 +306,12 @@ def register_participant(request):
     if request.method == 'POST':
         form = RegisterParticipantForm(request.POST)
         if form.is_valid():
-            participant = form.save(commit=False)
-            participant.user_id = request.user.id
-            participant.save()
-            return redirect('manage_participants')
+            try:
+                participant = form.save(commit=False)
+                participant.save()  # Save participant without assigning a user if user linkage is unnecessary
+                return redirect('manage_participants')
+            except IntegrityError:
+                form.add_error(None, 'A participant with this subject ID already exists.')
     else:
         form = RegisterParticipantForm()
     return render(request, 'maat_app/register_participant.html', {'form': form})

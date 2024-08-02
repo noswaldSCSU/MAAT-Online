@@ -37,6 +37,9 @@ class Participant(models.Model):
     subject_id = models.CharField(max_length=100, unique=True)
     experiments = models.ManyToManyField(Experiment, through='Participation')
 
+    def __str__(self):
+        return self.subject_id
+
 class Participation(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
