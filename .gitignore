@@ -43,6 +43,7 @@ htmlcov/
 local_settings.py
 db.sqlite3  # Ignore SQLite database file if you are using it
 # Ignore the database configuration file.
+settings.py
 
 # Virtual Environments
 env/
