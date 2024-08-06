@@ -3,8 +3,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from .models import Experiment, Trial, Participant, Response as ParticipantResponse
-from .forms import ExperimentForm, InstructionsForm, TrialsFormSet, RegisterParticipantForm, TrialForm, modelformset_factory
+from .models import Experiment, Trial, Participant, ImageUpload, Response as ParticipantResponse
+from .forms import ExperimentForm, InstructionsForm, TrialsFormSet, RegisterParticipantForm, TrialForm, modelformset_factory, ImageUploadForm
 import random
 import csv
 from django.http import HttpResponse
@@ -219,6 +219,14 @@ def configure_experiment(request, experiment_id):
         form = ExperimentForm(instance=experiment)
     return render(request, 'maat_app/configure_experiment.html', {'form': form, 'experiment': experiment})
 
+@login_required
+def create_experiment_with_image(request, image_id):
+    selected_image = ImageUpload.objects.get(id=image_id)
+    if request.method == 'POST':
+        # Handle form submission and save experiment with the selected image
+        pass
+    return render(request, 'maat_app/create_experiment.html', {'selected_image': selected_image})
+
 # Create Experiment View (Step 1)
 @login_required
 def create_experiment_step1(request):
@@ -380,6 +388,38 @@ def delete_trial(request, trial_id):
         trial.delete()
         return redirect('researcher_dashboard')
     return render(request, 'maat_app/delete_trial.html', {'trial': trial})
+
+# Image Upload
+@login_required
+def upload_image(request):
+    if request.method == 'POST':
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('list_images')  # Redirect to the list of uploaded images
+    else:
+        form = ImageUploadForm()
+    return render(request, 'maat_app/upload_image.html', {'form': form})
+
+def list_images(request):
+    images = ImageUpload.objects.all()
+    return render(request, 'maat_app/list_images.html', {'images': images})
+
+def upload_success(request):
+    return render(request, 'maat_app/upload_success.html')
+
+def select_image(request):
+    images = ImageUpload.objects.all()
+    return render(request, 'maat_app/select_image.html', {'images': images})
+
+def apply_image_selection(request):
+    if request.method == "POST":
+        selected_image_id = request.POST.get('selected_image')
+        selected_image = ImageUpload.objects.get(id=selected_image_id)
+        # You can now use `selected_image` as needed (e.g., save to the experiment or redirect)
+        # For example, redirect to create experiment page with the selected image
+        return redirect('create_experiment_with_image', image_id=selected_image_id)
+    return redirect('select_image')
 
 @login_required
 def export_csv(request, experiment_id):

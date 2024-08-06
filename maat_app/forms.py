@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import modelformset_factory
-from .models import Experiment, Trial, Participant
+from .models import Experiment, Trial, Participant, ImageUpload
 
 class ExperimentForm(forms.ModelForm):
     class Meta:
@@ -23,3 +23,8 @@ class RegisterParticipantForm(forms.ModelForm):
     class Meta:
         model = Participant
         fields = ['subject_id']
+        
+class ImageUploadForm(forms.ModelForm):
+    class Meta:
+        model = ImageUpload
+        fields = ['title', 'image']

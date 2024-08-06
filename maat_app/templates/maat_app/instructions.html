@@ -16,12 +16,12 @@
 function startExperiment() {
     const form = document.getElementById('instruction-form');
     const formAction = form.getAttribute('action');
-    const width = 800;
-    const height = 600;
-    const left = (screen.width - width) / 2;
-    const top = (screen.height - height) / 2;
 
-    window.open(formAction, 'ExperimentWindow', `width=${width},height=${height},top=${top},resizable,scrollbars`);
+    // Open a new window in full screen mode
+    const windowFeatures = `top=0,left=0,width=${screen.width},height=${screen.height},toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no`;
+    const newWindow = window.open(formAction, 'ExperimentWindow', windowFeatures);
+    newWindow.moveTo(0, 0);  // Move to top left corner
+    newWindow.resizeTo(screen.width, screen.height);  // Resize to full screen
 }
 </script>
 {% endblock %}
